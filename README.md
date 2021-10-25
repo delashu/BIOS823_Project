@@ -15,4 +15,4 @@ Shusaku Asai, Saahithi Rao, Michael Tang
   
  **Data Science Plan**:  
    
- **Roles, responsibilities and timed milestones** :  
+ **Roles, Responsibilities and Timed Milestones** :  
