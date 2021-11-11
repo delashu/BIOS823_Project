@@ -1,4 +1,4 @@
-# BIOS823_Project
+# BioMIDS
 Project repository
 
 **Team**:  
