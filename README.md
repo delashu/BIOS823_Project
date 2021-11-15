@@ -54,17 +54,17 @@ ML Part I - Fit and interpret first logistic regression and NN model (due: 11/15
 ML Part II - Help Michael with hyper-parameter tuning of models (due: 11/16/21)  
 Deployment Aid with Saahithi (due: 11/20/21)  
 
-*Yi*
+*Yi*   
 Feature Engineering (possible dimension reduction) (due: 11/12/21)  
 Machine Learning (Boosting model) (due: 11/15/21)  
 Assist MT with model deployment (due: 11/21/21)  
  
-*Saahithi*   
+*Saahithi*    
 Query and merge data and explore data distributions, missingness etc (11/10/21)  
 Help Yi and Shu with feature engineering and creating an analytic dataset (11/12/21)  
 Build a ML (random forest model) and compare with models of team members (11/16/21)  
 
-*Michael*
+*Michael*   
 Literature Review - look at existing methodologies on how experts handle EHR data (due: 11/11/21)  
 Dashboard - integrate model within a Plotly dashboard (due: 11/19/21)  
 Deployment - deploy model on AWS beanstalk (due: 11/21/21)  
