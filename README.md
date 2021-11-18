@@ -27,23 +27,24 @@ The objective of the project is two-fold. We aim to 1) develop an algorithm that
  *Data plan (ETL)*:  The MIMIC III dataset is utilized to train, validate, and deploy the model. Due to the size of the full MIMIC III dataset, the demo data will first be downloaded as a proof-of-concept of the ETL, modeling, and deployment pipeline. The demo data is used to explore the data, construct feature engineering pipelines, and fit prediction models. The feature engineering and modeling pipelines will then be migrated to the entirety of the MIMIC III dataset, leveraging Google Cloud and BigQuery.  
 Three primary datasets are used: ICU Stays, Hospital Admissions, and Procedural Events. The ICU Stays is used as the base table that provides information on patient ICU admission, discharge, length of stay, and unit location. The Hospital Admissions table is used to identify if the hospital stay resulted in “Death”. The Procedural Events table provides procedures performed on patients during each ICU stay.   
    
-*ML Plan*:  
+**ML Plan**:  
  - Select 3-5 classification models to train (e.g. Logistic Regression, Random Forest, XGBoost, Neural Network, etc. We want to explore models with different complexity and how well they handle imbalance datasets. Training will be performed on the training )  
  - Determine the right metrics for performance evaluation (Since the data is very imbalanced, we will look into using F1 score, AUC,  Recall. Evaluation will be done on the test set)  
  - Each model hyperparameter will be finetuned based on selected evaluation metric (hyperparameter tuning will be performed on the validation set)  
  - The best performing model will be used to construct a dashboard, where users could manually enter the values for each covariate/predictor. The dashboard is expected to output the likelihood of death during the ICU stay  
  - The dashboard will be deployed on AWS (Beanstalk is a host server that allows users to deploy Flask application)  
  
-*Operations Plan (11 - 14 days):*  
-Data exploration (1 d)  
-Data transformation and merge (1 - 2 days)  
-Model selection (1  day )  
-Model training and validation (3 - 5 days)  
-Integration of model weights and dashboard (3 days)  
-Deployment on AWS (2 days)  
+**Operations Plan (11 - 14 days):** 
+- Data exploration (1 d)  
+- Data transformation and merge (1 - 2 days)  
+- Model selection (1  day )  
+- Model training and validation (3 - 5 days)  
+- Integration of model weights and dashboard (3 days)  
+- Deployment on AWS (2 days)  
 
-*Technology Stack:*  
-We will use Google BigQuery to access and query the full data. SQL will be utilized to store the data as each table is ~6.2gb and join the necessary data into an analytic data frame. We will use several python packages to explore and analyze the data including: pandas and numpy (data manipulation), sklearn (logistic regression, random forest, etc.), matplotlib (visualizations). Lastly, we will create a dashboard using AWS to deploy our interactive model.   
+**Technology Stack:**  
+We use Google BigQuery to access and query the full data. In order to do this, we connected a BigQuery account with our Physionet autenticated researcher account to gain access, following [the tutorial](https://mimic.mit.edu/docs/iii/tutorials/intro-to-mimic-iii-bq/).
+SQL will be utilized to store the data as each table is ~6.2gb and join the necessary data into an analytic data frame. We will use several python packages to explore and analyze the data including: pandas and numpy (data manipulation), sklearn (logistic regression, random forest, etc.), matplotlib (visualizations). Lastly, we will create a dashboard using AWS to deploy our interactive model.   
 
  
  **Roles, Responsibilities and Timed Milestones** :    
