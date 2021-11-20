@@ -5,7 +5,7 @@ Project repository
   
 
 **Group Members**:  
-Shusaku Asai, Saahithi Rao, Michael Tang   
+Shusaku Asai, Saahithi Rao, Michael Tang, Yi Feng     
 
 **Data**:  
 1. ICU Stays  
