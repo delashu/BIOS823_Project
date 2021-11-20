@@ -5,7 +5,7 @@ Project repository
   
 
 **Group Members**:  
-Shusaku Asai, Saahithi Rao, Michael Tang   
+Shusaku Asai, Saahithi Rao, Michael Tang, Yi Feng     
 
 **Data**:  
 1. ICU Stays  
@@ -28,9 +28,9 @@ The objective of the project is two-fold. We aim to 1) develop an algorithm that
 Three primary datasets are used: ICU Stays, Hospital Admissions, and Procedural Events. The ICU Stays is used as the base table that provides information on patient ICU admission, discharge, length of stay, and unit location. The Hospital Admissions table is used to identify if the hospital stay resulted in “Death”. The Procedural Events table provides procedures performed on patients during each ICU stay.   
    
 **ML Plan**:  
- - Select 3-5 classification models to train (e.g. Logistic Regression, Random Forest, XGBoost, Neural Network, etc. We want to explore models with different complexity and how well they handle imbalance datasets. Training will be performed on the training )  
- - Determine the right metrics for performance evaluation (Since the data is very imbalanced, we will look into using F1 score, AUC,  Recall. Evaluation will be done on the test set)  
- - Each model hyperparameter will be finetuned based on selected evaluation metric (hyperparameter tuning will be performed on the validation set)  
+ - Select 3-5 classification models to train (e.g. Logistic Regression, Random Forest, XGBoost, Neural Network, etc. We aim to explore models with different complexity. Model training and validation will be performed solely on the training dataset).    
+ - Determine the right metrics for performance evaluation (Since the data is slightly imbalanced, we will look into using F1 score, AUC,  Recall. Evaluation will be done on the training and test set)   
+ - Each model hyperparameter will be finetuned based on selected evaluation metrics (hyperparameter tuning will be performed on the validation set)  
  - The best performing model will be used to construct a dashboard, where users could manually enter the values for each covariate/predictor. The dashboard is expected to output the likelihood of death during the ICU stay  
  - The dashboard will be deployed on AWS (Beanstalk is a host server that allows users to deploy Flask application)  
  
