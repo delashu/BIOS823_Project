@@ -12,7 +12,7 @@ import xgboost
 st.set_page_config(layout="wide")
 
 #load in the training data
-df = pd.read_pickle('demo_training.pkl')
+df = pd.read_pickle('../feature_engineering/demo_training.pkl')
 
 st.title("ICU Death Monitoring Dashboard")
 
@@ -166,6 +166,7 @@ elif al_select == "TRANSFER FROM HOSP/EXTRAM":
     pred_df['admission_location_TRANSFER FROM HOSP/EXTRAM'] = 1
 elif al_select == "TRANSFER FROM SKILLED NUR":
     pred_df['admission_location_TRANSFER FROM SKILLED NUR'] = 1
+
 #insurance
 if ins_select == "Medicare":
     pred_df['insurance_Medicare'] = 1
@@ -173,6 +174,7 @@ elif ins_select == "Other":
     pred_df['insurance_Other'] = 1
 elif ins_select == "Private":
     pred_df['insurance_Private'] = 1
+
 #diagnosis
 if diag_select == "CV Failure":
     pred_df['diagnosis_CV Failure'] = 1
@@ -182,14 +184,18 @@ elif diag_select == "Other":
     pred_df['diagnosis_Other'] = 1
 elif diag_select == "Sepsis":
     pred_df['diagnosis_Sepsis'] = 1
+    
 #load best model after hypertuning using pickling
-clf = joblib.load('clf_best_full_data.pickle')
+clf = joblib.load('../modeling/clf_best_full_data.pickle')
+
 #make np dataframe into array
 pred_array = pred_df.to_numpy()
+
 #make prediction!
 prediction = clf.predict_proba(pred_array[:1])[:,1]
 # output death predictions as score from 0 to 100
 model_score = round(100*prediction[0],2)
+
 #output the score
 st.subheader(str("**Patient Death Prediction Score**"))
 st.metric(label="Model Risk Prediction Score", value=str(model_score) + str("%"))
