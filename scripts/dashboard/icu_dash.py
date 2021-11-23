@@ -4,7 +4,10 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import statsmodels.api as sm
+import joblib
 import pickle
+import xgboost
+
 #set wide format
 st.set_page_config(layout="wide")
 #load in the training data
@@ -12,6 +15,7 @@ df = pd.read_pickle('demo_training.pkl')
 #perform LR
 #logit = sm.Logit(df['hospital_expire_flag'],  df.drop('hospital_expire_flag', axis=1))
 
+# side bar text
 st.sidebar.header("ICU Death Prediction Dashboard")
 st.sidebar.text("This dashboard is created for \nhealthcare spcecialists in the \nIntensive Care Unit (ICU). \nThe dashboard allows the end user \nto explore previous ICU deaths. The \nuser can then input patient \ninformation typically collected \nduring an ICU stay. The dashboard \nwill output corresponding risk of \ndeath and useful algorithm metrics.")
 st.sidebar.subheader("I. Exploratory Data Analysis:")
@@ -22,14 +26,14 @@ st.sidebar.text(" ")
 st.sidebar.subheader("Authors:")
 st.sidebar.text("Shusaku Asai, Yi Feng,\nSaahithi Rao, Michael Tang")
 
-#rename for plotting purposes:
+# rename for plotting purposes:
 df = df.rename(columns={'hospital_expire_flag': 'Death',
                        'los': 'Length of Stay'})
 
 
 df['Death'] = np.where(df['Death']==0, "Not Dead",
                                    np.where(df['Death'] == 1, "Dead", "Other"))
-#output into column features in streamlit
+# output into column features in streamlit
 st.subheader(str("**I: Exploratory Data Analysis**"))
 st.markdown(str("Pick a continuous and categorical variable to explore from the dropdown menu based on historic ICU data."))
 col1, col2 = st.columns((1, 1))
@@ -63,6 +67,7 @@ col3, col4 = st.columns((1, 1))
 col3.plotly_chart(fig_cont)
 col4.plotly_chart(barfig)
 
+# user inputs
 st.subheader(str("**II: Predictive Modeling**"))
 st.markdown(str("Input patient information below."))
 #empty_left, contents_left, contents_right, empty_right = st.beta_columns([1, 1.5, 1.5, 1])
@@ -109,18 +114,86 @@ VENT_select = col33.number_input('Ventilation', value=0, step=1)
 
 col34, col35, col36, col37, col38, col39 = st.columns([1,1,1,1,1,1])
 diag_select =  col34.selectbox("Diagnosis", ['Other','Sepsis','Organ Failure','CV Failure','CNS Failure'])
-fc_select =  col35.selectbox("Frist Care Unit", ['MICU','SICU','CCU','TSICU','CSRU'])
+fc_select =  col35.selectbox("First Care Unit", ['MICU','SICU','CCU','TSICU','CSRU'])
 fw_select =  col36.selectbox("First Ward", ['52','23','Other'])
 at_select =  col37.selectbox("Admit Type", ['EMERGENCY','ELECTIVE','URGENT'])
 al_select =  col38.selectbox("Admit Location", ['EMERGENCY ROOM ADMIT','TRANSFER FROM HOSP/EXTRAM','CLINIC REFERRAL/PREMATURE','PHYS REFERRAL/NORMAL DELI','TRANSFER FROM SKILLED NUR'])
 ins_select =  col39.selectbox("Insurance Status", ['Medicare','Private','Medicaid','Other'])
 
-#make pandas dataframe from the user input: 
-#load in crosstables: 
-# with open("clf_best.pickle", "rb") as fp:   # Unpickling
-#     xgb = pickle.load(fp)
+# make pandas dataframe from the user input: 
+predat = {'los': [los_select], 'ACET325': [ACE_select],'CALG1I': [CAL_select], 'D5W1000': [DW_select],
+'D5W250': [DW2_select], 'FURO40I': [FURO_select],'HEPA5I': [HEPA_select], 'INSULIN': [INSU_select],
+'KCL20P': [KCL_select], 'KCL20PM': [KCL2_select],'KCLBASE2': [KCLBASE_select], 'LR1000': [LR_select],
+'MAG2PM': [MAG_select], 'METO25': [METO_select],'MORP2I': [MORP_select], 'NACLFLUSH': [NACL_select],
+'NS1000': [NS_select], 'NS250': [NS2_select],'NS500': [NS5_select], 'VANC1F': [VANC_select],
+'VANCOBASE': [VANCBASE_select], 'Dialysis': [DIAL_select],'Imaging': [IMAG_select], 'Intubation/Extubation': [INTUB_select],
+'Invasive Lines': [INV_select], 'Peripheral Lines': [PERI_select],'Procedures': [PROC_select], 'Significant Events': [SIGNIF_select],
+'Ventilation': [VENT_select], 'first_wardid_52': [0], 'first_wardid_Other': [0], 'first_careunit_CSRU': [0],
+'first_careunit_MICU': [0], 'first_careunit_SICU': [0], 'first_careunit_TSICU': [0],
+'admission_type_EMERGENCY': [0], 'admission_type_URGENT': [0], 'admission_location_EMERGENCY ROOM ADMIT': [0],
+'admission_location_PHYS REFERRAL/NORMAL DELI': [0], 'admission_location_TRANSFER FROM HOSP/EXTRAM': [0],
+'admission_location_TRANSFER FROM SKILLED NUR': [0], 'insurance_Medicare': [0],
+'insurance_Other': [0], 'insurance_Private': [0], 'diagnosis_CV Failure': [0], 'diagnosis_Organ Failure': [0], 
+'diagnosis_Other': [0], 'diagnosis_Sepsis': [0]}
 
-model_score = 80
+pred_df = pd.DataFrame(data=predat) 
+
+# data frame variables need to match features of model
+# set categorical features based on user input
+if fw_select == "52":
+    pred_df['first_wardid_52'] = 1
+elif fw_select == "Other":
+    pred_df['first_wardid_Other'] = 1
+
+if fc_select == "CSRU":
+    pred_df['first_careunit_CSRU'] = 1
+elif fc_select == "MICU":
+    pred_df['first_careunit_MICU'] = 1
+elif fc_select == "SICU":
+    pred_df['first_careunit_SICU'] = 1
+elif fc_select == "TSICU":
+    pred_df['first_careunit_TSICU'] = 1
+
+if at_select == "EMERGENCY":
+    pred_df['admission_type_EMERGENCY'][0] = 1
+elif at_select == "URGENT":
+    pred_df['admission_type_URGENT'] = 1
+
+if al_select == "EMERGENCY ROOM ADMIT":
+    pred_df['admission_location_EMERGENCY ROOM ADMIT'] = 1
+elif al_select == "PHYS REFERRAL/NORMAL DELI":
+    pred_df['admission_location_PHYS REFERRAL/NORMAL DELI'] = 1
+elif al_select == "TRANSFER FROM HOSP/EXTRAM":
+    pred_df['admission_location_TRANSFER FROM HOSP/EXTRAM'] = 1
+elif al_select == "TRANSFER FROM SKILLED NUR":
+    pred_df['admission_location_TRANSFER FROM SKILLED NUR'] = 1
+
+if ins_select == "Medicare":
+    pred_df['insurance_Medicare'] = 1
+elif ins_select == "Other":
+    pred_df['insurance_Other'] = 1
+elif ins_select == "Private":
+    pred_df['insurance_Private'] = 1
+
+if diag_select == "CV Failure":
+    pred_df['diagnosis_CV Failure'] = 1
+elif diag_select == "Organ Failure":
+    pred_df['diagnosis_Organ Failure'] = 1
+elif diag_select == "Other":
+    pred_df['diagnosis_Other'] = 1
+elif diag_select == "Sepsis":
+    pred_df['diagnosis_Sepsis'] = 1
+
+
+st.dataframe(pred_df.assign(hack='').set_index('hack'))
+
+# make predictions from best model after hypertuning
+clf = joblib.load('clf_best_full_data.pickle')
+pred_array = pred_df.to_numpy()
+prediction = clf.predict_proba(pred_array[:1])[:,1]
+
+# output death predictions
+model_score = round(100*prediction[0],2)
 base_score = 50
 score_delta = round(model_score - base_score,2)
 st.subheader(str("**Patient Death Prediction Score**"))
@@ -133,16 +206,3 @@ if model_score >=50 and model_score <80:
        st.warning("Patient has medium risk of death")
 if model_score <50:
        st.success("Patient has low risk of death")
-
-predat = {'los': [los_select], 'ACET325': [ACE_select],'CALG1I': [CAL_select], 'D5W1000': [DW_select],
-'D5W250': [DW2_select], 'FURO40I': [FURO_select],'HEPA5I': [HEPA_select], 'INSULIN': [INSU_select],
-'KCL20P': [KCL_select], 'KCL20PM': [KCL2_select],'KCLBASE2': [KCLBASE_select], 'LR1000': [LR_select],
-'MAG2PM': [MAG_select], 'METO25': [METO_select],'MORP2I': [MORP_select], 'NACLFLUSH': [NACL_select],
-'NS1000': [NS_select], 'NS250': [NS2_select],'NS500': [NS5_select], 'VANC1F': [VANC_select],
-'VANCOBASE': [VANCBASE_select], 'Dialysis': [DIAL_select],'Imaging': [IMAG_select], 'Intubation/Extubation': [INTUB_select],
-'Invasive Lines': [INV_select], 'Peripheral Lines': [PERI_select],'Procedures': [PROC_select], 'Significant Events': [SIGNIF_select],
-'Ventilation': [VENT_select], 'diagnosis': [diag_select],'first_careunit': [fc_select], 'first_wardid': [fw_select],
-'admission_type': [at_select], 'admission_location': [al_select],'insurance': [ins_select]}
-
-pred_df = pd.DataFrame(data=predat)
-st.dataframe(pred_df.assign(hack='').set_index('hack'))
