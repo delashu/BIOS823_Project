@@ -4,10 +4,14 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import statsmodels.api as sm
+import pickle
 #set wide format
 st.set_page_config(layout="wide")
 #load in the training data
 df = pd.read_pickle('demo_training.pkl')
+#perform LR
+#logit = sm.Logit(df['hospital_expire_flag'],  df.drop('hospital_expire_flag', axis=1))
+
 st.sidebar.header("ICU Death Prediction Dashboard")
 st.sidebar.text("This dashboard is created for \nhealthcare spcecialists in the \nIntensive Care Unit (ICU). \nThe dashboard allows the end user \nto explore previous ICU deaths. The \nuser can then input patient \ninformation typically collected \nduring an ICU stay. The dashboard \nwill output corresponding risk of \ndeath and useful algorithm metrics.")
 st.sidebar.subheader("I. Exploratory Data Analysis:")
@@ -71,7 +75,7 @@ DW2_select = col9.number_input('D5W250', value=0, step=1)
 
 col10, col11, col12, col13, col14 = st.columns([1,1,1,1,1])
 FURO_select = col10.number_input('FURO40I', value=0, step=1)
-FURO_select = col11.number_input('HEPA5I', value=0, step=1)
+HEPA_select = col11.number_input('HEPA5I', value=0, step=1)
 INSU_select = col12.number_input('INSULIN', value=0, step=1)
 KCL_select = col13.number_input('KCL20P', value=0, step=1)
 KCL2_select = col14.number_input('KCL20PM', value=0, step=1)
@@ -102,3 +106,43 @@ PERI_select = col30.number_input('Peripheral Lines', value=0, step=1)
 PROC_select = col31.number_input('Procedures', value=0, step=1)
 SIGNIF_select = col32.number_input('Significant Events', value=0, step=1)
 VENT_select = col33.number_input('Ventilation', value=0, step=1)
+
+col34, col35, col36, col37, col38, col39 = st.columns([1,1,1,1,1,1])
+diag_select =  col34.selectbox("Diagnosis", ['Other','Sepsis','Organ Failure','CV Failure','CNS Failure'])
+fc_select =  col35.selectbox("Frist Care Unit", ['MICU','SICU','CCU','TSICU','CSRU'])
+fw_select =  col36.selectbox("First Ward", ['52','23','Other'])
+at_select =  col37.selectbox("Admit Type", ['EMERGENCY','ELECTIVE','URGENT'])
+al_select =  col38.selectbox("Admit Location", ['EMERGENCY ROOM ADMIT','TRANSFER FROM HOSP/EXTRAM','CLINIC REFERRAL/PREMATURE','PHYS REFERRAL/NORMAL DELI','TRANSFER FROM SKILLED NUR'])
+ins_select =  col39.selectbox("Insurance Status", ['Medicare','Private','Medicaid','Other'])
+
+#make pandas dataframe from the user input: 
+#load in crosstables: 
+# with open("clf_best.pickle", "rb") as fp:   # Unpickling
+#     xgb = pickle.load(fp)
+
+model_score = 80
+base_score = 50
+score_delta = round(model_score - base_score,2)
+st.subheader(str("**Patient Death Prediction Score**"))
+st.metric(label="Model Risk Prediction Score", value=str(model_score) + str("%"), 
+       delta=str(score_delta) + str("%"), delta_color="inverse")
+
+if model_score>=80:
+       st.error("Patient has high risk of death")
+if model_score >=50 and model_score <80:
+       st.warning("Patient has medium risk of death")
+if model_score <50:
+       st.success("Patient has low risk of death")
+
+predat = {'los': [los_select], 'ACET325': [ACE_select],'CALG1I': [CAL_select], 'D5W1000': [DW_select],
+'D5W250': [DW2_select], 'FURO40I': [FURO_select],'HEPA5I': [HEPA_select], 'INSULIN': [INSU_select],
+'KCL20P': [KCL_select], 'KCL20PM': [KCL2_select],'KCLBASE2': [KCLBASE_select], 'LR1000': [LR_select],
+'MAG2PM': [MAG_select], 'METO25': [METO_select],'MORP2I': [MORP_select], 'NACLFLUSH': [NACL_select],
+'NS1000': [NS_select], 'NS250': [NS2_select],'NS500': [NS5_select], 'VANC1F': [VANC_select],
+'VANCOBASE': [VANCBASE_select], 'Dialysis': [DIAL_select],'Imaging': [IMAG_select], 'Intubation/Extubation': [INTUB_select],
+'Invasive Lines': [INV_select], 'Peripheral Lines': [PERI_select],'Procedures': [PROC_select], 'Significant Events': [SIGNIF_select],
+'Ventilation': [VENT_select], 'diagnosis': [diag_select],'first_careunit': [fc_select], 'first_wardid': [fw_select],
+'admission_type': [at_select], 'admission_location': [al_select],'insurance': [ins_select]}
+
+pred_df = pd.DataFrame(data=predat)
+st.dataframe(pred_df.assign(hack='').set_index('hack'))
