@@ -12,7 +12,7 @@ import xgboost
 st.set_page_config(layout="wide")
 
 #load in the training data
-df = pd.read_pickle('demo_training.pkl')
+df = pd.read_pickle('scripts/dashboard/demo_training.pkl')
 
 st.title("ICU Death Monitoring Dashboard")
 
@@ -186,7 +186,7 @@ elif diag_select == "Sepsis":
     pred_df['diagnosis_Sepsis'] = 1
     
 #load best model after hypertuning using pickling
-clf = joblib.load('clf_best_full_data.pickle')
+clf = joblib.load('scripts/dashboard/clf_best_full_data.pickle')
 
 #make np dataframe into array
 pred_array = pred_df.to_numpy()
