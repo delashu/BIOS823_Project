@@ -49,7 +49,7 @@ SQL will be utilized to store the data as each table is ~6.2gb and join the nece
 
 Click on the streamlit badge below or [here](https://share.streamlit.io/delashu/bios823_project/main/scripts/dashboard/icu_dash.py) to open the dashboard.  
 
-[![my streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://share.streamlit.io/delashu/bios823_project/main/scripts/dashboard/icu_dash.pyy)  
+[![my streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://share.streamlit.io/delashu/bios823_project/main/scripts/dashboard/icu_dash.py)  
 
  
  **Roles, Responsibilities and Timed Milestones** :    
