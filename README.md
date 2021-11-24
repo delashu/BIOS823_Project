@@ -39,11 +39,17 @@ Three primary datasets are used: ICU Stays, Hospital Admissions, Prescriptions, 
 - Model selection (1  day )  
 - Model training and validation (3 - 5 days)  
 - Integration of model weights and dashboard (3 days)  
-- Deployment on AWS (2 days)  
+- Deployment on streamlit (2 days)  
 
 **Technology Stack:**  
 We use Google BigQuery to access and query the full MIMIC III dataset. In order to do this, we connect a BigQuery account with our Physionet autenticated researcher account to gain access, following [the tutorial](https://mimic.mit.edu/docs/iii/tutorials/intro-to-mimic-iii-bq/).  
 SQL will be utilized to store the data as each table is ~6.2gb and join the necessary data into an analytic data frame. We will use several python packages to explore and analyze the data including: pandas and numpy (data manipulation), sklearn (logistic regression, random forest, etc.), matplotlib (visualizations). Lastly, we will create a dashboard using streamlit to deploy our interactive model.   
+
+**Dashboard**  
+
+Click on the streamlit badge below or [here](https://share.streamlit.io/delashu/bios823_project/main/scripts/dashboard/icu_dash.py) to open the dashboard.  
+
+[![my streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://share.streamlit.io/delashu/bios823_project/main/scripts/dashboard/icu_dash.pyy)  
 
  
  **Roles, Responsibilities and Timed Milestones** :    
@@ -52,7 +58,7 @@ EDA part I - exploratory data analysis and visualizations (due: 11/10/21)
 EDA part II - feature engineering of hospital procedures of interest (due: 11/12/21)   
 ML Part I - Fit and interpret first logistic regression and NN model (due: 11/15/21)  
 ML Part II - Help Michael with hyper-parameter tuning of models (due: 11/16/21)  
-Deployment Aid with Saahithi (due: 11/20/21)  
+Deployment of model to streamlit (due: 11/20/21)  
 
 *Yi*   
 Feature Engineering (possible dimension reduction) (due: 11/12/21)  
@@ -67,6 +73,6 @@ Build a ML (random forest model) and compare with models of team members (11/16/
 *Michael*   
 Literature Review - look at existing methodologies on how experts handle EHR data (due: 11/11/21)  
 Dashboard - integrate model within a Plotly dashboard (due: 11/19/21)  
-Deployment - deploy model on AWS beanstalk (due: 11/21/21)  
+Deployment - deploy model on streamlit (due: 11/21/21)  
   
 
