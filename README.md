@@ -42,8 +42,7 @@ Three primary datasets are used: ICU Stays, Hospital Admissions, Prescriptions, 
 - Deployment on streamlit (2 days)  
 
 **Technology Stack:**  
-We use Google BigQuery to access and query the full MIMIC III dataset. In order to do this, we connect a BigQuery account with our Physionet autenticated researcher account to gain access, following [the tutorial](https://mimic.mit.edu/docs/iii/tutorials/intro-to-mimic-iii-bq/).  
-SQL will be utilized to store the data as each table is ~6.2gb and join the necessary data into an analytic data frame. We will use several python packages to explore and analyze the data including: pandas and numpy (data manipulation), sklearn (logistic regression, random forest, etc.), matplotlib (visualizations). Lastly, we will create a dashboard using streamlit to deploy our interactive model.   
+We use Google BigQuery to access and query the full MIMIC III dataset. In order to do this, we connect a BigQuery account with our Physionet autenticated researcher account to gain access, following [the tutorial](https://mimic.mit.edu/docs/iii/tutorials/intro-to-mimic-iii-bq/). However, connection to the MIMIC-3 database and query retrieval could not be achieved on local machine due to security retriction. Therefore SQL will be utilized to store the data locally as each table is ~6.2gb and join the necessary data into an analytic data frame. We will use several python packages to explore and analyze the data including: pandas and numpy (data manipulation), sklearn (logistic regression, random forest, etc.), matplotlib (visualizations). Lastly, we will create a dashboard using streamlit to deploy our interactive model.   
 
 **Dashboard**  
 
